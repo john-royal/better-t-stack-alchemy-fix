@@ -1,9 +1,9 @@
-import { drizzle } from "drizzle-orm/libsql";
-import { createClient } from "@libsql/client";
+import { env } from "cloudflare:workers";
+import { drizzle } from "drizzle-orm/d1";
 
-const client = createClient({
-  url: process.env.DATABASE_URL || "",
-});
+// This has to be a function because Cloudflare does not populate env at the top level.
+// You can also manually pass in the env object. For example:
+//  const createDatabase = (env: CloudflareEnv) => drizzle({ ... })
+export const createDatabase = () => drizzle(env.DB);
 
-export const db = drizzle({ client });
-
+export type Database = ReturnType<typeof createDatabase>;

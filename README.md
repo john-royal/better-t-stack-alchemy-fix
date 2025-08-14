@@ -23,33 +23,31 @@ First, install the dependencies:
 ```bash
 bun install
 ```
-## Database Setup
-
-This project uses SQLite with Drizzle ORM.
-
-1. Start the local SQLite database:
-```bash
-cd apps/server && bun db:local
-```
-
-
-2. Update your `.env` file in the `apps/server` directory with the appropriate connection details if needed.
-
-3. Apply the schema to your database:
-```bash
-bun db:push
-```
-
 
 Then, run the development server:
 
 ```bash
-bun dev
+bun run dev # alias for `alchemy dev`
 ```
+
+To deploy your application, run:
+
+```bash
+bun run deploy # alias for `alchemy deploy`
+```
+
+To destroy your application, run:
+
+```bash
+bun run destroy # alias for `alchemy destroy`
+```
+
+## Database Setup
+
+This project uses SQLite with Drizzle ORM. The database, powered by Cloudflare D1, is automatically created and migrated by Alchemy when you run `alchemy dev` or `alchemy deploy`. No need to run any database commands manually.
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
 The API is running at [http://localhost:3000](http://localhost:3000).
-
 
 
 ## Project Structure
@@ -65,9 +63,9 @@ my-better-t-app-2/
 
 - `bun dev`: Start all applications in development mode
 - `bun build`: Build all applications
-- `bun dev:web`: Start only the web application
-- `bun dev:server`: Start only the server
+- `bun dev:web`: Start only the web application (warning: will need to set `VITE_SERVER_URL` in `.env` to the server URL)
+- ~~`bun dev:server`: Start only the server~~ not supported by Alchemy; use `bun dev` instead
 - `bun check-types`: Check TypeScript types across all apps
-- `bun db:push`: Push schema changes to database
-- `bun db:studio`: Open database studio UI
-- `cd apps/server && bun db:local`: Start the local SQLite database
+- ~~`bun db:push`: Push schema changes to database~~ handled by Alchemy
+- ~~`bun db:studio`: Open database studio UI~~ let me know if you want me to show this; requires additional configuration for D1
+- ~~`cd apps/server && bun db:local`: Start the local SQLite database~~ no need; handled by Alchemy

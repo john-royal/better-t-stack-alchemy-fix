@@ -9,12 +9,11 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]
-          },
+    },
     "outDir": "./dist",
-    "types": [
-      "bun"
-    ],
+    "types": ["@cloudflare/workers-types"],
     "composite": true,
+    "emitDeclarationOnly": true,
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx"
   }

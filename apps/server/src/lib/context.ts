@@ -1,18 +1,29 @@
-import type { Context as HonoContext } from "hono";
-import { auth } from "./auth";
+import { createDatabase, type Database } from "@/db";
+import type { Env, Context as HonoContext } from "hono";
+import { createMiddleware } from "hono/factory";
+import { createAuth, type Auth } from "./auth";
 
-export type CreateContextOptions = {
-  context: HonoContext;
-};
+export interface HonoEnv extends Env {
+  Bindings: CloudflareEnv; // accessible via c.env (and `import { env } from "cloudflare:workers"`)
+  Variables: { auth: Auth; db: Database }; // accessible via c.get("auth") and c.get("db")
+}
 
-export async function createContext({ context }: CreateContextOptions) {
-  const session = await auth.api.getSession({
-    headers: context.req.raw.headers,
+// The `createMiddleware` helper ensures that the Hono context is correctly typed.
+export const createHonoContext = createMiddleware<HonoEnv>(async (c, next) => {
+  const db = createDatabase();
+  const auth = createAuth(db);
+  c.set("auth", auth);
+  c.set("db", db);
+  await next();
+});
+
+export async function createTRPCContext(c: HonoContext<HonoEnv>) {
+  const session = await c.get("auth").api.getSession({
+    headers: c.req.raw.headers,
   });
   return {
     session,
   };
 }
 
-
-export type Context = Awaited<ReturnType<typeof createContext>>;
+export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
